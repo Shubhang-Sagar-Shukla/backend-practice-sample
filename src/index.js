@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 import{DB_NAME} from "./constants.js";
 import express from "express";
 import connectDB from "./db/index2.js";
-const app= express();
+import {app} from './app.js'
+
+//const app= express();
 
 connectDB()
 .then(()=>{

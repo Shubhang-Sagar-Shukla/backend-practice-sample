@@ -36,3 +36,14 @@ app.use(express.urlencoded({extended:true,limit:"16kb"}));//to parse urlencoded 
 
 app.use(cookieParser())
 app.use(express.static("public"));//to serve static files like images, css files, js files etc from public folder
+
+
+//routes import
+import userRouter from './routes/user.routes.js';
+
+
+//routes declaration
+app.use("/api/v1/Users",userRouter)
+
+
+export {app}
