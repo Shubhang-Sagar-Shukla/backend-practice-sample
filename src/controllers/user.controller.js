@@ -1,7 +1,7 @@
 import asyncHandler from '../utils/asyncHandler.js'
 import { ApiError} from '../utils/apiError.js'
 import { User } from '../models/user.model.js'
-import { uploadOnCloudinary } from '../utils/cloudinary.js'
+import { uploadOnCloudinary } from '../cloudinary.js'
 import {apiResponse} from '../utils/apiResponse.js'
 
 
@@ -36,7 +36,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
    // checking if user already exists
-   const existedUser= User.findOne({
+   const existedUser= await User.findOne({
     $or:[{username},{email}]
    })
 
@@ -48,9 +48,21 @@ const registerUser = asyncHandler(async (req, res) => {
   
  //avatar 0 because we need the first property which may or may not(thats why ?) provide the path
   const avatarLocalPath = req.files?.avatar[0]?.path
+
+
+  /*
+  is method se agar cover image nhi ayi to error aa jayega, kyuki kahi per bhi check nhi kar rahe ki cover image hai ya nhi , but in case of avatar we were checking for avatar(ahead)
+
   const coverImageLocalPath = req.files?.coverImage[0]?.path
 
-  if(!avatarLocalpath){
+  */
+
+let coverImageLocalPath;
+if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length >0){
+  coverImageLocalPath = req.files.coverImage[0].path;
+}
+  
+  if(!avatarLocalPath){
     throw new ApiError(400,"Avatar file is required")
   }
 
@@ -68,7 +80,7 @@ const registerUser = asyncHandler(async (req, res) => {
     fullName,
     avatar: avatar.url,
     coverImage: coverImage?.url,
-    username:username.toLowerCase(),
+    username,
     email,
     password
    })
